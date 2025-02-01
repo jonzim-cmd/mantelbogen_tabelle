@@ -115,12 +115,12 @@
       <textarea id="nachtermin" placeholder="z.B. 3&#10;2&#10;4&#10;..."></textarea>
     </div>
     
-    <!-- Buttons zur Berechnung und zum Zurücksetzen -->
-    <button onclick="calculateGrades()">Berechnen</button>
+    <!-- Buttons: Gesamteingabe zurücksetzen und nur Noteneingabe zurücksetzen -->
     <button onclick="resetAll()">Alles zurücksetzen</button>
+    <button onclick="resetGrades()">Ergebniseingabe zurücksetzen</button>
     
-    <!-- Ergebnis-Tabelle -->
-    <table id="resultTable" style="display:none;">
+    <!-- Ergebnis-Tabelle (immer sichtbar) -->
+    <table id="resultTable">
       <thead>
         <tr>
           <th>Notenschlüssel (Punkte)</th>
@@ -174,10 +174,14 @@
           <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
           <td colspan="3" id="avgAll"></td>
         </tr>
+        <!-- Gesamtzahlen-Zeile (immer als letzte Zeile) -->
+        <tr class="footer-row">
+          <td colspan="4" id="totalRow"></td>
+        </tr>
       </tbody>
     </table>
     
-    <!-- Button zum PDF-Export -->
+    <!-- Button zum PDF-Export (wird nur angezeigt, wenn Noteneingaben vorliegen) -->
     <button id="generatePDF" style="display:none;">PDF erzeugen</button>
   </div>
   
@@ -226,21 +230,29 @@
         if (grade >= 1 && grade <= 6) { countN[grade]++; }
       });
       
-      // Durchschnittsberechnung (auf zwei Nachkommastellen, Komma als Dezimaltrennzeichen)
-      const average = (arr) => {
-        if (arr.length === 0) return 0;
-        return arr.reduce((sum, val) => sum + val, 0) / arr.length;
-      };
-      const avgH   = average(hauptNotes);
-      const avgAll = average(hauptNotes.concat(nachNotes));
-      
-      // Ergebnis-Tabelle füllen (Zähler und Durchschnitt)
+      // Gesamtzahlen ermitteln und in den Zellen anzeigen
+      let totalHCount = 0, totalNCount = 0;
       for (let i = 1; i <= 6; i++) {
+        totalHCount += countH[i];
+        totalNCount += countN[i];
         document.querySelector(".count-h-" + i).textContent = countH[i] || 0;
         document.querySelector(".count-n-" + i).textContent = countN[i] || 0;
       }
-      document.getElementById("avgH").textContent   = avgH.toFixed(2).replace('.', ',');
-      document.getElementById("avgAll").textContent = avgAll.toFixed(2).replace('.', ',');
+      const totalCount = totalHCount + totalNCount;
+      
+      // Durchschnittsberechnung (auf zwei Nachkommastellen, Komma als Dezimaltrennzeichen)
+      const avgH = hauptNotes.length ? (hauptNotes.reduce((sum, val) => sum + val, 0) / hauptNotes.length).toFixed(2).replace('.', ',') : "0,00";
+      const allNotes = hauptNotes.concat(nachNotes);
+      const avgAll = allNotes.length ? (allNotes.reduce((sum, val) => sum + val, 0) / allNotes.length).toFixed(2).replace('.', ',') : "0,00";
+      
+      document.getElementById("avgH").textContent = avgH;
+      document.getElementById("avgAll").textContent = avgAll;
+      
+      // Fülle die Gesamtzahlen-Zeile (immer als letzte Zeile)
+      document.getElementById("totalRow").textContent =
+        "Schülerzahlen – Haupttermin: " + totalHCount +
+        " | Nachtermin: " + totalNCount +
+        " | Gesamt: " + totalCount;
       
       // Notenschlüssel (Punkterange) berechnen – sofern ein gültiger Maximalpunktwert eingegeben wurde
       const rangeCells = {
@@ -252,7 +264,6 @@
         6: document.querySelector(".range-6")
       };
       
-      // Notengrenzen je nach Schema
       let noteBoundaries;
       if (schema === "ihk") {
         noteBoundaries = [
@@ -275,8 +286,6 @@
       }
       
       if (!isNaN(maxPoints) && maxPoints > 0) {
-        // Für jede Note wird der Punktbereich berechnet – dabei wird für den unteren Grenzwert aufgerundet
-        // und für den oberen Grenzwert abgerundet, sodass nur halbe Punktwerte vorkommen.
         noteBoundaries.forEach((boundary, idx) => {
           const note   = boundary.note;
           const pctText = (boundary.min * 100).toFixed(2) + "%";
@@ -285,66 +294,76 @@
           if (idx === 0) {
             upperPoints = roundDownToNearestHalf(maxPoints).toFixed(1);
           } else {
-            // Berechne zunächst den Wert aus der nächsthöheren Grenze minus 0.1
             upperPoints = roundDownToNearestHalf(maxPoints * noteBoundaries[idx - 1].min - 0.1).toFixed(1);
           }
           rangeCells[note].textContent = "ab " + pctText + " (" + lowerPoints + " bis " + upperPoints + " Punkte)";
         });
       } else {
-        // Falls kein gültiger Maximalpunktwert vorliegt, wird die Spalte geleert.
         for (let i = 1; i <= 6; i++) {
           rangeCells[i].textContent = "";
         }
       }
       
-      // Ergebnis-Tabelle und PDF-Button einblenden
-      document.getElementById("resultTable").style.display = "table";
-      document.getElementById("generatePDF").style.display = "inline-block";
+      // PDF-Button nur anzeigen, wenn in mindestens einem der Noteneingabefelder Werte vorliegen
+      if (hauptNotes.length + nachNotes.length > 0) {
+        document.getElementById("generatePDF").style.display = "inline-block";
+      } else {
+        document.getElementById("generatePDF").style.display = "none";
+      }
     }
     
-    // Funktion zum kompletten Zurücksetzen aller Eingaben und Ausblendung der Ergebnisanzeige
+    // Setzt alle Eingaben (maximale Punktzahl und Noteneingaben) zurück
     function resetAll() {
       document.getElementById("maxPoints").value = "";
       document.getElementById("haupttermin").value = "";
       document.getElementById("nachtermin").value  = "";
-      // Setze das Notenschema auf Standard (IHK)
       document.querySelector('input[name="notenschema"][value="ihk"]').checked = true;
-      // Blende Ergebnis-Tabelle und PDF-Button aus
-      document.getElementById("resultTable").style.display = "none";
-      document.getElementById("generatePDF").style.display = "none";
+      calculateGrades();
     }
     
+    // Setzt nur die Noteneingaben (Haupt- und Nachtermin) zurück, die maximale Punktzahl bleibt erhalten
+    function resetGrades() {
+      document.getElementById("haupttermin").value = "";
+      document.getElementById("nachtermin").value = "";
+      calculateGrades();
+    }
+    
+    // Live-Aktualisierung: Sobald in den Eingabefeldern Werte eingegeben werden, wird die Berechnung neu durchgeführt.
+    document.getElementById("maxPoints").addEventListener("input", calculateGrades);
+    document.getElementById("haupttermin").addEventListener("input", calculateGrades);
+    document.getElementById("nachtermin").addEventListener("input", calculateGrades);
+    
+    // Aktualisierung auch bei Änderung des Notenschemas (Notengrenzen)
+    document.querySelectorAll('input[name="notenschema"]').forEach(elem => {
+      elem.addEventListener("change", calculateGrades);
+    });
+    
     // PDF-Erzeugung: Die Tabelle wird mittels html2canvas als Bild in ein PDF eingebettet.
-    // Dabei wird ein Seitenrand von 2,5 cm (ca. 70,87 pt) in alle Richtungen berücksichtigt.
     document.getElementById("generatePDF").addEventListener("click", function(){
       html2canvas(document.getElementById("resultTable")).then(function(canvas) {
         const imgData = canvas.toDataURL('image/png');
         const { jsPDF } = window.jspdf;
-        // Erstelle ein PDF im Hochformat (A4) in Punkt-Einheiten
         const pdf = new jsPDF("p", "pt", "a4");
         const pdfWidth  = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
-        // 2,5 cm Rand entspricht ca. 70,87 pt
-        const margin = 70.87;
+        const margin = 70.87; // ca. 2,5 cm Rand
         const availableWidth = pdfWidth - 2 * margin;
         const availableHeight = pdfHeight - 2 * margin;
-        
-        // Hole Bildmaße aus dem Canvas (Originalbild)
         const imgProps = pdf.getImageProperties(imgData);
         const originalImgWidth  = imgProps.width;
         const originalImgHeight = imgProps.height;
-        // Skaliere so, dass das Bild in den verfügbaren Bereich passt, ohne das Seitenverhältnis zu verlieren
         const scale = Math.min(availableWidth / originalImgWidth, availableHeight / originalImgHeight);
         const imgDisplayWidth = originalImgWidth * scale;
         const imgDisplayHeight = originalImgHeight * scale;
-        // Zentriere das Bild innerhalb des Randbereichs
         const x = margin + (availableWidth - imgDisplayWidth) / 2;
         const y = margin + (availableHeight - imgDisplayHeight) / 2;
-        
         pdf.addImage(imgData, 'PNG', x, y, imgDisplayWidth, imgDisplayHeight);
         pdf.save("Notenauswertung.pdf");
       });
     });
+    
+    // Initialer Aufruf, damit die Tabelle bereits beim Laden der Seite korrekt dargestellt wird
+    calculateGrades();
   </script>
 </body>
 </html>
