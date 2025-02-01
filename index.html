@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notenauswertung</title>
+  <style>
+    /* Modernes Layout */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      background: #fff;
+      padding: 20px;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    label {
+      font-weight: bold;
+      color: #555;
+    }
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .radio-group {
+      margin-bottom: 15px;
+    }
+    .radio-group label {
+      font-weight: normal;
+      margin-right: 10px;
+    }
+    button {
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #f0f0f0;
+    }
+    .footer-row td {
+      font-weight: bold;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Notenauswertung</h1>
+    
+    <!-- Auswahl des Notenschemas -->
+    <div class="radio-group">
+      <label>Notengrenzen:</label>
+      <label><input type="radio" name="notenschema" value="ihk" checked> IHK (92%)</label>
+      <label><input type="radio" name="notenschema" value="ap"> AP/3.SA (85%)</label>
+    </div>
+    
+    <!-- Eingabe maximaler Punkte -->
+    <div>
+      <label for="maxPoints">Max. Punkte:</label>
+      <input type="number" id="maxPoints" placeholder="z.B. 100" />
+    </div>
+    
+    <!-- Ergebnisse Haupttermin (Noten) -->
+    <div>
+      <label for="haupttermin">
+        Ergebnisse Haupttermin<br>
+        (Noten, jeweils einen Wert pro Zeile)
+      </label>
+      <textarea id="haupttermin" placeholder="z.B. 3&#10;2&#10;4&#10;3&#10;2&#10;2&#10;4&#10;2&#10;3&#10;1&#10;4&#10;1&#10;4&#10;4&#10;4&#10;4&#10;4"></textarea>
+    </div>
+    
+    <!-- Ergebnisse Nachtermin (Noten) -->
+    <div>
+      <label for="nachtermin">
+        Ergebnisse Nachtermin<br>
+        (Noten, jeweils einen Wert pro Zeile)
+      </label>
+      <textarea id="nachtermin" placeholder="z.B. 3&#10;2&#10;4&#10;..."></textarea>
+    </div>
+    
+    <!-- Buttons zur Berechnung und zum Zurücksetzen -->
+    <button onclick="calculateGrades()">Berechnen</button>
+    <button onclick="resetAll()">Alles zurücksetzen</button>
+    
+    <!-- Ergebnis-Tabelle -->
+    <table id="resultTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>Notenschlüssel (Punkte)</th>
+          <th>Note</th>
+          <th>Anzahl der Schüler<br>Haupttermin</th>
+          <th>Anzahl der Schüler<br>Nachtermin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="row-note-1">
+          <td class="range-1"></td>
+          <td>1</td>
+          <td class="count-h-1"></td>
+          <td class="count-n-1"></td>
+        </tr>
+        <tr id="row-note-2">
+          <td class="range-2"></td>
+          <td>2</td>
+          <td class="count-h-2"></td>
+          <td class="count-n-2"></td>
+        </tr>
+        <tr id="row-note-3">
+          <td class="range-3"></td>
+          <td>3</td>
+          <td class="count-h-3"></td>
+          <td class="count-n-3"></td>
+        </tr>
+        <tr id="row-note-4">
+          <td class="range-4"></td>
+          <td>4</td>
+          <td class="count-h-4"></td>
+          <td class="count-n-4"></td>
+        </tr>
+        <tr id="row-note-5">
+          <td class="range-5"></td>
+          <td>5</td>
+          <td class="count-h-5"></td>
+          <td class="count-n-5"></td>
+        </tr>
+        <tr id="row-note-6">
+          <td class="range-6"></td>
+          <td>6</td>
+          <td class="count-h-6"></td>
+          <td class="count-n-6"></td>
+        </tr>
+        <tr class="footer-row">
+          <td colspan="1">Klassendurchschnitt<br>(nur Haupttermin)</td>
+          <td colspan="3" id="avgH"></td>
+        </tr>
+        <tr class="footer-row">
+          <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
+          <td colspan="3" id="avgAll"></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Button zum PDF-Export -->
+    <button id="generatePDF" style="display:none;">PDF erzeugen</button>
+  </div>
+  
+  <!-- jsPDF und html2canvas von CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <script>
+    // Hilfsfunktionen zum Runden auf halbe Punktwerte
+    function roundUpToNearestHalf(value) {
+      return Math.ceil(value * 2) / 2;
+    }
+    function roundDownToNearestHalf(value) {
+      return Math.floor(value * 2) / 2;
+    }
+    
+    // Funktion zur Berechnung der Notenauswertung
+    function calculateGrades() {
+      // Ausgewähltes Notenschema ermitteln
+      const schema = document.querySelector('input[name="notenschema"]:checked').value;
+      const maxPointsVal = document.getElementById("maxPoints").value;
+      const maxPoints = parseFloat(maxPointsVal);
+      
+      // Noteneingaben aus den Textareas (Erwartung: ausschließlich Noten zwischen 1 und 6)
+      const hauptText = document.getElementById("haupttermin").value.trim();
+      const nachText  = document.getElementById("nachtermin").value.trim();
+      
+      // Zeilenweise einlesen; dabei werden eventuelle deutsche Dezimaltrennzeichen (Komma) konvertiert
+      const parseLines = (text) => {
+        return text ? text.split(/\r?\n/).map(x => parseFloat(x.replace(',', '.'))).filter(n => !isNaN(n)) : [];
+      };
+      
+      const hauptNotes = parseLines(hauptText);
+      const nachNotes  = parseLines(nachText);
+      
+      // Zählung der Noten (von 1 bis 6)
+      const countH = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+      const countN = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+      
+      hauptNotes.forEach(note => {
+        const grade = Math.round(note);
+        if (grade >= 1 && grade <= 6) { countH[grade]++; }
+      });
+      nachNotes.forEach(note => {
+        const grade = Math.round(note);
+        if (grade >= 1 && grade <= 6) { countN[grade]++; }
+      });
+      
+      // Durchschnittsberechnung (auf zwei Nachkommastellen, Komma als Dezimaltrennzeichen)
+      const average = (arr) => {
+        if (arr.length === 0) return 0;
+        return arr.reduce((sum, val) => sum + val, 0) / arr.length;
+      };
+      const avgH   = average(hauptNotes);
+      const avgAll = average(hauptNotes.concat(nachNotes));
+      
+      // Ergebnis-Tabelle füllen (Zähler und Durchschnitt)
+      for (let i = 1; i <= 6; i++) {
+        document.querySelector(".count-h-" + i).textContent = countH[i] || 0;
+        document.querySelector(".count-n-" + i).textContent = countN[i] || 0;
+      }
+      document.getElementById("avgH").textContent   = avgH.toFixed(2).replace('.', ',');
+      document.getElementById("avgAll").textContent = avgAll.toFixed(2).replace('.', ',');
+      
+      // Notenschlüssel (Punkterange) berechnen – sofern ein gültiger Maximalpunktwert eingegeben wurde
+      const rangeCells = {
+        1: document.querySelector(".range-1"),
+        2: document.querySelector(".range-2"),
+        3: document.querySelector(".range-3"),
+        4: document.querySelector(".range-4"),
+        5: document.querySelector(".range-5"),
+        6: document.querySelector(".range-6")
+      };
+      
+      // Notengrenzen je nach Schema
+      let noteBoundaries;
+      if (schema === "ihk") {
+        noteBoundaries = [
+          { note: 1, min: 0.92 },
+          { note: 2, min: 0.81 },
+          { note: 3, min: 0.67 },
+          { note: 4, min: 0.50 },
+          { note: 5, min: 0.30 },
+          { note: 6, min: 0.00 }
+        ];
+      } else {
+        noteBoundaries = [
+          { note: 1, min: 0.85 },
+          { note: 2, min: 0.70 },
+          { note: 3, min: 0.55 },
+          { note: 4, min: 0.41 },
+          { note: 5, min: 0.20 },
+          { note: 6, min: 0.00 }
+        ];
+      }
+      
+      if (!isNaN(maxPoints) && maxPoints > 0) {
+        // Für jede Note wird der Punktbereich berechnet – dabei wird für den unteren Grenzwert aufgerundet
+        // und für den oberen Grenzwert abgerundet, sodass nur halbe Punktwerte vorkommen.
+        noteBoundaries.forEach((boundary, idx) => {
+          const note   = boundary.note;
+          const pctText = (boundary.min * 100).toFixed(2) + "%";
+          const lowerPoints = roundUpToNearestHalf(maxPoints * boundary.min).toFixed(1);
+          let upperPoints;
+          if (idx === 0) {
+            upperPoints = roundDownToNearestHalf(maxPoints).toFixed(1);
+          } else {
+            // Berechne zunächst den Wert aus der nächsthöheren Grenze minus 0.1
+            upperPoints = roundDownToNearestHalf(maxPoints * noteBoundaries[idx - 1].min - 0.1).toFixed(1);
+          }
+          rangeCells[note].textContent = "ab " + pctText + " (" + lowerPoints + " bis " + upperPoints + " Punkte)";
+        });
+      } else {
+        // Falls kein gültiger Maximalpunktwert vorliegt, wird die Spalte geleert.
+        for (let i = 1; i <= 6; i++) {
+          rangeCells[i].textContent = "";
+        }
+      }
+      
+      // Ergebnis-Tabelle und PDF-Button einblenden
+      document.getElementById("resultTable").style.display = "table";
+      document.getElementById("generatePDF").style.display = "inline-block";
+    }
+    
+    // Funktion zum kompletten Zurücksetzen aller Eingaben und Ausblendung der Ergebnisanzeige
+    function resetAll() {
+      document.getElementById("maxPoints").value = "";
+      document.getElementById("haupttermin").value = "";
+      document.getElementById("nachtermin").value  = "";
+      // Setze das Notenschema auf Standard (IHK)
+      document.querySelector('input[name="notenschema"][value="ihk"]').checked = true;
+      // Blende Ergebnis-Tabelle und PDF-Button aus
+      document.getElementById("resultTable").style.display = "none";
+      document.getElementById("generatePDF").style.display = "none";
+    }
+    
+    // PDF-Erzeugung: Die Tabelle wird mittels html2canvas als Bild in ein PDF eingebettet.
+    // Dabei wird ein Seitenrand von 2,5 cm (ca. 70,87 pt) in alle Richtungen berücksichtigt.
+    document.getElementById("generatePDF").addEventListener("click", function(){
+      html2canvas(document.getElementById("resultTable")).then(function(canvas) {
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        // Erstelle ein PDF im Hochformat (A4) in Punkt-Einheiten
+        const pdf = new jsPDF("p", "pt", "a4");
+        const pdfWidth  = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        // 2,5 cm Rand entspricht ca. 70,87 pt
+        const margin = 70.87;
+        const availableWidth = pdfWidth - 2 * margin;
+        const availableHeight = pdfHeight - 2 * margin;
+        
+        // Hole Bildmaße aus dem Canvas (Originalbild)
+        const imgProps = pdf.getImageProperties(imgData);
+        const originalImgWidth  = imgProps.width;
+        const originalImgHeight = imgProps.height;
+        // Skaliere so, dass das Bild in den verfügbaren Bereich passt, ohne das Seitenverhältnis zu verlieren
+        const scale = Math.min(availableWidth / originalImgWidth, availableHeight / originalImgHeight);
+        const imgDisplayWidth = originalImgWidth * scale;
+        const imgDisplayHeight = originalImgHeight * scale;
+        // Zentriere das Bild innerhalb des Randbereichs
+        const x = margin + (availableWidth - imgDisplayWidth) / 2;
+        const y = margin + (availableHeight - imgDisplayHeight) / 2;
+        
+        pdf.addImage(imgData, 'PNG', x, y, imgDisplayWidth, imgDisplayHeight);
+        pdf.save("Notenauswertung.pdf");
+      });
+    });
+  </script>
+</body>
+</html>
