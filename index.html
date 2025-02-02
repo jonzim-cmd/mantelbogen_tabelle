@@ -5,39 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notenauswertung</title>
   <style>
-    /* Modernes Layout */
+    /* Dark Mode */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f2f2f2;
+      background: #121212;
+      color: #ccc; /* dezente, nicht zu helle Schrift */
       margin: 0;
       padding: 20px;
     }
     .container {
       max-width: 800px;
-      background: #fff;
+      background: #1e1e1e;
       padding: 20px;
       margin: 0 auto;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
       border-radius: 8px;
     }
     h1 {
       text-align: center;
       margin-bottom: 20px;
-      color: #333;
+      color: #ccc;
     }
     label {
       font-weight: bold;
-      color: #555;
+      color: #aaa;
     }
+    /* Inputs und Textareas */
     input[type="number"],
     textarea {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
       margin-bottom: 15px;
-      border: 1px solid #ccc;
+      border: 1px solid #555;
       border-radius: 4px;
       font-size: 16px;
+      background: #333;
+      color: #ccc;
     }
     .radio-group {
       margin-bottom: 15px;
@@ -45,6 +49,7 @@
     .radio-group label {
       font-weight: normal;
       margin-right: 10px;
+      color: #aaa;
     }
     button {
       background: #007BFF;
@@ -60,23 +65,27 @@
     button:hover {
       background: #0056b3;
     }
-    table {
+    /* Ergebnis-Tabelle im Browser: Dark Mode */
+    #resultTable {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
       font-size: 14px;
+      background: #1e1e1e;
+      color: #ccc;
     }
-    th, td {
-      border: 1px solid #ddd;
+    #resultTable th, 
+    #resultTable td {
+      border: 1px solid #555;
       padding: 10px;
       text-align: center;
     }
-    th {
-      background: #f0f0f0;
+    #resultTable th {
+      background: #333;
     }
     .footer-row td {
       font-weight: bold;
-      background: #fafafa;
+      background: #2a2a2a;
     }
   </style>
 </head>
@@ -115,11 +124,11 @@
       <textarea id="nachtermin" placeholder="z.B. 3&#10;2&#10;4&#10;..."></textarea>
     </div>
     
-    <!-- Buttons: Gesamteingabe zurücksetzen und nur Noteneingabe zurücksetzen -->
+    <!-- Buttons -->
     <button onclick="resetAll()">Alles zurücksetzen</button>
     <button onclick="resetGrades()">Ergebniseingabe zurücksetzen</button>
     
-    <!-- Ergebnis-Tabelle (immer sichtbar) -->
+    <!-- Ergebnis-Tabelle -->
     <table id="resultTable">
       <thead>
         <tr>
@@ -174,7 +183,7 @@
           <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
           <td colspan="3" id="avgAll"></td>
         </tr>
-        <!-- Gesamtzahlen-Zeile (immer als letzte Zeile) -->
+        <!-- Gesamtzahlen-Zeile -->
         <tr class="footer-row">
           <td colspan="4" id="totalRow"></td>
         </tr>
@@ -248,13 +257,13 @@
       document.getElementById("avgH").textContent = avgH;
       document.getElementById("avgAll").textContent = avgAll;
       
-      // Fülle die Gesamtzahlen-Zeile (immer als letzte Zeile)
+      // Fülle die Gesamtzahlen-Zeile
       document.getElementById("totalRow").textContent =
         "Schülerzahlen – Haupttermin: " + totalHCount +
         " | Nachtermin: " + totalNCount +
         " | Gesamt: " + totalCount;
       
-      // Notenschlüssel (Punkterange) berechnen – sofern ein gültiger Maximalpunktwert eingegeben wurde
+      // Notenschlüssel (Punkterange) berechnen
       const rangeCells = {
         1: document.querySelector(".range-1"),
         2: document.querySelector(".range-2"),
@@ -304,7 +313,7 @@
         }
       }
       
-      // PDF-Button nur anzeigen, wenn in mindestens einem der Noteneingabefelder Werte vorliegen
+      // PDF-Button nur anzeigen, wenn Noteneingaben vorliegen
       if (hauptNotes.length + nachNotes.length > 0) {
         document.getElementById("generatePDF").style.display = "inline-block";
       } else {
@@ -312,7 +321,7 @@
       }
     }
     
-    // Setzt alle Eingaben (maximale Punktzahl und Noteneingaben) zurück
+    // Alle Eingaben zurücksetzen
     function resetAll() {
       document.getElementById("maxPoints").value = "";
       document.getElementById("haupttermin").value = "";
@@ -321,26 +330,43 @@
       calculateGrades();
     }
     
-    // Setzt nur die Noteneingaben (Haupt- und Nachtermin) zurück, die maximale Punktzahl bleibt erhalten
+    // Nur Noteneingaben zurücksetzen
     function resetGrades() {
       document.getElementById("haupttermin").value = "";
       document.getElementById("nachtermin").value = "";
       calculateGrades();
     }
     
-    // Live-Aktualisierung: Sobald in den Eingabefeldern Werte eingegeben werden, wird die Berechnung neu durchgeführt.
+    // Live-Aktualisierung
     document.getElementById("maxPoints").addEventListener("input", calculateGrades);
     document.getElementById("haupttermin").addEventListener("input", calculateGrades);
     document.getElementById("nachtermin").addEventListener("input", calculateGrades);
-    
-    // Aktualisierung auch bei Änderung des Notenschemas (Notengrenzen)
     document.querySelectorAll('input[name="notenschema"]').forEach(elem => {
       elem.addEventListener("change", calculateGrades);
     });
     
-    // PDF-Erzeugung: Die Tabelle wird mittels html2canvas als Bild in ein PDF eingebettet.
+    // PDF-Erzeugung: Der dark mode wird für den Export durch Überschreiben aller Styles im Klon aufgehoben.
     document.getElementById("generatePDF").addEventListener("click", function(){
-      html2canvas(document.getElementById("resultTable")).then(function(canvas) {
+      const originalTable = document.getElementById("resultTable");
+      const tableClone = originalTable.cloneNode(true);
+      
+      // Alle Styles im Klon so überschreiben, dass ein helles Layout (weiß mit schwarzer Schrift) entsteht
+      tableClone.style.background = "#fff";
+      tableClone.style.color = "#000";
+      tableClone.querySelectorAll('*').forEach(el => {
+        el.style.backgroundColor = "#fff";
+        el.style.color = "#000";
+      });
+      
+      // Temporärer, versteckter Container
+      const hiddenContainer = document.createElement("div");
+      hiddenContainer.style.position = "fixed";
+      hiddenContainer.style.top = "-10000px";
+      hiddenContainer.style.left = "-10000px";
+      hiddenContainer.appendChild(tableClone);
+      document.body.appendChild(hiddenContainer);
+      
+      html2canvas(tableClone).then(function(canvas) {
         const imgData = canvas.toDataURL('image/png');
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF("p", "pt", "a4");
@@ -359,10 +385,11 @@
         const y = margin + (availableHeight - imgDisplayHeight) / 2;
         pdf.addImage(imgData, 'PNG', x, y, imgDisplayWidth, imgDisplayHeight);
         pdf.save("Notenauswertung.pdf");
+        document.body.removeChild(hiddenContainer);
       });
     });
     
-    // Initialer Aufruf, damit die Tabelle bereits beim Laden der Seite korrekt dargestellt wird
+    // Initialer Aufruf
     calculateGrades();
   </script>
 </body>
