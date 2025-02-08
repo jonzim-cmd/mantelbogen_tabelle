@@ -1,70 +1,82 @@
-/* CSS-Variablen für konsistente Farben und Typografie */
-:root {
-  --primary-color: #007BFF;
-  --primary-hover: #0056b3;
-  --background-dark: #121212;
-  --background-light: #ffffff;
-  --text-color-dark: #ccc;
-  --text-color-light: #000;
-  --container-bg-dark: #1e1e1e;
-  --container-bg-light: #f8f9fa;
-  --border-color-dark: #555;
-  --border-color-light: #dee2e6;
-  --card-shadow-dark: rgba(0, 0, 0, 0.5);
-  --card-shadow-light: rgba(0, 0, 0, 0.1);
-  --font-family: 'Roboto', sans-serif;
+/* Dark Mode */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #121212;
+  color: #ccc; /* dezente, nicht zu helle Schrift */
+  margin: 0;
+  padding: 20px;
 }
-
-/* Dark Mode (Standard) */
-body.dark-mode {
-  font-family: var(--font-family);
-  background: var(--background-dark);
-  color: var(--text-color-dark);
-  transition: background 0.3s, color 0.3s;
-}
-
-/* Light Mode */
-body.light-mode {
-  font-family: var(--font-family);
-  background: var(--background-light);
-  color: var(--text-color-light);
-  transition: background 0.3s, color 0.3s;
-}
-
-/* Card-Design für den Inhalt */
-.card {
-  background: var(--container-bg-dark);
-  box-shadow: 0 2px 8px var(--card-shadow-dark);
-  border: none;
+.container {
+  max-width: 800px;
+  background: #1e1e1e;
+  padding: 20px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
-  transition: background 0.3s, box-shadow 0.3s;
 }
-
-body.light-mode .card {
-  background: var(--container-bg-light);
-  box-shadow: 0 2px 8px var(--card-shadow-light);
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ccc;
 }
-
-/* Tabellenanpassungen */
-table#resultTable {
-  background: inherit;
-  color: inherit;
+label {
+  font-weight: bold;
+  color: #aaa;
 }
-table#resultTable th,
-table#resultTable td {
-  border-color: var(--border-color-dark);
+/* Inputs und Textareas */
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 16px;
+  background: #333;
+  color: #ccc;
 }
-body.light-mode table#resultTable th,
-body.light-mode table#resultTable td {
-  border-color: var(--border-color-light);
+.radio-group {
+  margin-bottom: 15px;
 }
-
-/* Button-Übergänge */
-.btn {
-  transition: background 0.3s, color 0.3s;
+.radio-group label {
+  font-weight: normal;
+  margin-right: 10px;
+  color: #aaa;
 }
-
-/* Navbar-Anpassungen */
-.navbar {
-  transition: background 0.3s;
+button {
+  background: #007BFF;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+button:hover {
+  background: #0056b3;
+}
+/* Ergebnis-Tabelle im Browser: Dark Mode */
+#resultTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+  background: #1e1e1e;
+  color: #ccc;
+}
+#resultTable th, 
+#resultTable td {
+  border: 1px solid #555;
+  padding: 10px;
+  text-align: center;
+}
+#resultTable th {
+  background: #333;
+}
+.footer-row td {
+  font-weight: bold;
+  background: #2a2a2a;
 }
