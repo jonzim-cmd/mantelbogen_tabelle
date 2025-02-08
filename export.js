@@ -2,7 +2,7 @@ document.getElementById("generatePDF").addEventListener("click", function(){
   const originalTable = document.getElementById("resultTable");
   const tableClone = originalTable.cloneNode(true);
 
-  // Überschreibe alle Styles im Klon, sodass ein helles Layout (weiß mit schwarzer Schrift) entsteht
+  // Alle Styles im Klon so überschreiben, dass ein helles Layout (weiß mit schwarzer Schrift) entsteht
   tableClone.style.background = "#fff";
   tableClone.style.color = "#000";
   tableClone.querySelectorAll('*').forEach(el => {
