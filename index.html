@@ -6,8 +6,6 @@
   <title>Notenauswertung</title>
   <!-- Externe CSS-Datei einbinden -->
   <link rel="stylesheet" href="styles.css">
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
@@ -57,19 +55,14 @@
             <th>Note</th>
             <th>Anzahl der Schüler<br>Haupttermin</th>
             <th>Anzahl der Schüler<br>Nachtermin</th>
-            <th>Verteilung</th>
           </tr>
         </thead>
         <tbody>
-          <!-- In der ersten Noten-Zeile wird eine zusätzliche Zelle mit rowspan="6" eingefügt, die das Diagramm enthält -->
           <tr id="row-note-1">
             <td class="range-1"></td>
             <td>1</td>
             <td class="count-h-1"></td>
             <td class="count-n-1"></td>
-            <td rowspan="6" class="distribution-chart-cell">
-              <canvas id="distributionChart" width="150" height="200"></canvas>
-            </td>
           </tr>
           <tr id="row-note-2">
             <td class="range-2"></td>
@@ -101,17 +94,17 @@
             <td class="count-h-6"></td>
             <td class="count-n-6"></td>
           </tr>
-          <!-- Footer-Zeilen, hier wurde der colspan angepasst (statt 4 nun 5 Spalten) -->
           <tr class="footer-row">
             <td colspan="1">Klassendurchschnitt<br>(nur Haupttermin)</td>
-            <td colspan="4" id="avgH"></td>
+            <td colspan="3" id="avgH"></td>
           </tr>
           <tr class="footer-row">
             <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
-            <td colspan="4" id="avgAll"></td>
+            <td colspan="3" id="avgAll"></td>
           </tr>
+          <!-- Gesamtzahlen-Zeile -->
           <tr class="footer-row">
-            <td colspan="5" id="totalRow"></td>
+            <td colspan="4" id="totalRow"></td>
           </tr>
         </tbody>
       </table>
@@ -124,75 +117,6 @@
   <!-- Einbindung der externen Bibliotheken (CDNs) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  
-  <!-- Chart initialisieren -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Versuche, die im Tabellenfeld angezeigten Schülerzahlen (Haupttermin) auszulesen.
-      // Falls diese noch nicht gesetzt sind, werden Dummy-Daten verwendet.
-      const gradeCounts = [
-        parseInt(document.querySelector('.count-h-1')?.textContent) || 0,
-        parseInt(document.querySelector('.count-h-2')?.textContent) || 0,
-        parseInt(document.querySelector('.count-h-3')?.textContent) || 0,
-        parseInt(document.querySelector('.count-h-4')?.textContent) || 0,
-        parseInt(document.querySelector('.count-h-5')?.textContent) || 0,
-        parseInt(document.querySelector('.count-h-6')?.textContent) || 0
-      ];
-      
-      // Nutze Dummy-Daten, falls alle Werte 0 sind
-      const dataValues = gradeCounts.some(val => val !== 0) ? gradeCounts : [3, 8, 12, 9, 4, 1];
-
-      const data = {
-        labels: ['1', '2', '3', '4', '5', '6'],
-        datasets: [{
-          label: 'Haupttermin Verteilung',
-          data: dataValues,
-          fill: false,
-          borderColor: 'rgba(0,123,255,1)',
-          tension: 0.4,
-          pointRadius: 3,
-          pointBackgroundColor: 'rgba(0,123,255,1)'
-        }]
-      };
-
-      const config = {
-        type: 'line',
-        data: data,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false
-            }
-          },
-          scales: {
-            x: {
-              display: true,
-              title: {
-                display: true,
-                text: 'Note'
-              }
-            },
-            y: {
-              display: true,
-              title: {
-                display: true,
-                text: 'Anzahl'
-              },
-              beginAtZero: true,
-              ticks: {
-                stepSize: 1
-              }
-            }
-          }
-        }
-      };
-
-      const ctx = document.getElementById('distributionChart').getContext('2d');
-      new Chart(ctx, config);
-    });
-  </script>
   
   <!-- Externe JavaScript-Dateien -->
   <script src="script.js"></script>
