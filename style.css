@@ -1,0 +1,82 @@
+/* Dark Mode */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #121212;
+  color: #ccc; /* dezente, nicht zu helle Schrift */
+  margin: 0;
+  padding: 20px;
+}
+.container {
+  max-width: 800px;
+  background: #1e1e1e;
+  padding: 20px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+label {
+  font-weight: bold;
+  color: #aaa;
+}
+/* Inputs und Textareas */
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 16px;
+  background: #333;
+  color: #ccc;
+}
+.radio-group {
+  margin-bottom: 15px;
+}
+.radio-group label {
+  font-weight: normal;
+  margin-right: 10px;
+  color: #aaa;
+}
+button {
+  background: #007BFF;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+button:hover {
+  background: #0056b3;
+}
+/* Ergebnis-Tabelle im Browser: Dark Mode */
+#resultTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+  background: #1e1e1e;
+  color: #ccc;
+}
+#resultTable th, 
+#resultTable td {
+  border: 1px solid #555;
+  padding: 10px;
+  text-align: center;
+}
+#resultTable th {
+  background: #333;
+}
+.footer-row td {
+  font-weight: bold;
+  background: #2a2a2a;
+}
