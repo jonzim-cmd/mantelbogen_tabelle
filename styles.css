@@ -10,7 +10,6 @@
   --border-color: #555;
   --accent-color: #007BFF;
   --accent-hover: #0056b3;
-  --count-bg: rgba(255, 255, 255, 0.1); /* Hintergrundfarbe für Zellen mit Zahlen */
 }
 
 /* Dark Mode */
@@ -108,14 +107,13 @@ button:hover {
   overflow-x: auto;
 }
 
-/* Verbesserung der Sichtbarkeit der Zahlen in den Zellen:
-   Die Zellen, die mit den Klassen "count-h-*" und "count-n-*" versehen sind,
-   erhalten einen dezent kontrastierenden Hintergrund, eine größere Schrift und
-   einen kräftigeren Font, sodass die Zahlen schneller erfasst werden können. */
-td[class^="count-h-"],
-td[class^="count-n-"] {
+/* Badges: Die Zahlen in den Zellen werden in kleinen, auffälligen Boxen dargestellt */
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  font-size: 0.9em;
   font-weight: bold;
-  font-size: 16px;
-  background-color: var(--count-bg);
-  border-radius: 4px;
+  color: #fff;
+  background-color: var(--accent-color);
+  border-radius: 0.25rem;
 }
