@@ -43,7 +43,7 @@ function calculateGrades() {
   for (let i = 1; i <= 6; i++) {
     totalHCount += countH[i];
     totalNCount += countN[i];
-    // Setze zunächst den Textinhalt der Badge
+    // Setze den Textinhalt in die jeweilige Badge (innerhalb des span-Elements)
     document.querySelector(".count-h-" + i + " .badge").textContent = countH[i] || 0;
     document.querySelector(".count-n-" + i + " .badge").textContent = countN[i] || 0;
   }
@@ -120,8 +120,10 @@ function calculateGrades() {
     maxBadgeCount = Math.max(maxBadgeCount, countH[i] || 0, countN[i] || 0);
   }
   // Definiere Mindest- und Maximalbreite (in Pixel)
-  const minBadgeWidth = 40; // entspricht der aktuellen Standardbreite
-  const maxBadgeWidth = 100; // so breit wie die Zelle es zulässt, ohne die Tabelle zu erweitern
+  // Mindestbreite: so wie das ursprüngliche Badge (ohne feste Breite)
+  // Hier setzen wir einen sehr kleinen Ausgangswert, der aber durch den Text nicht unterschritten wird.
+  const minBadgeWidth = 20; 
+  const maxBadgeWidth = 100; // Maximale Breite, ohne die Tabelle zu erweitern
 
   // Setze die Breite für jede Badge anhand des Anteils am Maximalwert
   for (let i = 1; i <= 6; i++) {
