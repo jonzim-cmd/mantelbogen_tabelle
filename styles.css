@@ -113,14 +113,17 @@ td[class^="count-n-"] {
   text-align: left;
 }
 
-/* Badge-Stil (wie gehabt, hier mit linksbündiger Textausrichtung) */
+/* Badge-Stil */
 .badge {
   display: inline-block;
-  padding: 0.25em 0.5em;
+  height: 16px;            /* Feste Höhe, identisch zur minimalen Breite */
+  line-height: 16px;       /* Damit der Text vertikal zentriert ist */
+  box-sizing: border-box;  /* Padding und Border werden in der Breite berücksichtigt */
+  text-align: center;      /* Text im Badge zentriert */
+  background-color: var(--accent-color);
+  color: #fff;
+  border-radius: 0.25rem;
   font-size: 0.9em;
   font-weight: bold;
-  color: #fff;
-  background-color: var(--accent-color);
-  border-radius: 0.25rem;
-  text-align: left;
+  padding: 0;              /* Keine zusätzlichen Abstände, damit minimal Breite = Höhe */
 }
