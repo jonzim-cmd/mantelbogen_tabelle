@@ -83,16 +83,14 @@ button:hover {
   background: var(--bg-container);
   color: var(--text-color);
 }
-#resultTable th {
-  border: 1px solid var(--border-color);
-  padding: 10px;
-  text-align: center;
-  background: var(--bg-header);
-}
+#resultTable th, 
 #resultTable td {
   border: 1px solid var(--border-color);
   padding: 10px;
   text-align: center;
+}
+#resultTable th {
+  background: var(--bg-header);
 }
 .footer-row td {
   font-weight: bold;
@@ -111,9 +109,11 @@ button:hover {
   overflow-x: auto;
 }
 
-/* In den Zellen der Schülerzahlen (Haupttermin und Nachtermin) linksbündig ausrichten */
-td[class^="count-h-"],
-td[class^="count-n-"] {
+/* Spezifische Ausrichtung der Schülerzahlenzellen (Haupt- und Nachtermin):
+   Durch Hinzufügen von #resultTable vor dem Selektor wird diese Regel 
+   spezifischer als die allgemeine Regel, sodass diese Zellen links ausgerichtet werden. */
+#resultTable td[class^="count-h-"],
+#resultTable td[class^="count-n-"] {
   text-align: left;
 }
 
