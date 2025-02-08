@@ -244,7 +244,7 @@ window.addEventListener("DOMContentLoaded", function() {
   const originalHeightN = nachtermin.clientHeight;
 
   haupttermin.addEventListener("focus", function() {
-    haupttermin.style.height = "35em";
+    haupttermin.style.height = "37em";
   });
   haupttermin.addEventListener("blur", function() {
     haupttermin.style.height = originalHeightH + "px";
