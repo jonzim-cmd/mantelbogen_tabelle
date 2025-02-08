@@ -17,7 +17,7 @@ function calculateGrades() {
   const hauptText = document.getElementById("haupttermin").value.trim();
   const nachText  = document.getElementById("nachtermin").value.trim();
 
-  // Zeilenweise einlesen; dabei werden eventuelle deutsche Dezimaltrennzeichen (Komma) konvertiert
+  // Zeilenweise einlesen; dabei werden deutsche Dezimaltrennzeichen (Komma) konvertiert
   const parseLines = (text) => {
     return text ? text.split(/\r?\n/).map(x => parseFloat(x.replace(',', '.'))).filter(n => !isNaN(n)) : [];
   };
@@ -136,7 +136,7 @@ function resetGrades() {
   calculateGrades();
 }
 
-/* Live-Aktualisierung */
+/* Live-Aktualisierung der Berechnung */
 document.getElementById("maxPoints").addEventListener("input", calculateGrades);
 document.getElementById("haupttermin").addEventListener("input", calculateGrades);
 document.getElementById("nachtermin").addEventListener("input", calculateGrades);
@@ -146,3 +146,17 @@ document.querySelectorAll('input[name="notenschema"]').forEach(elem => {
 
 /* Initialer Aufruf */
 calculateGrades();
+
+/* Dark/Light Mode Toggle */
+document.getElementById("toggleTheme").addEventListener("click", function() {
+  const body = document.body;
+  if (body.classList.contains("dark-mode")) {
+    body.classList.remove("dark-mode");
+    body.classList.add("light-mode");
+    this.textContent = "Dark Mode";
+  } else {
+    body.classList.remove("light-mode");
+    body.classList.add("dark-mode");
+    this.textContent = "Light Mode";
+  }
+});
