@@ -37,6 +37,7 @@ label {
   font-weight: bold;
   color: var(--label-color);
 }
+
 /* Inputs und Textareas */
 input[type="number"],
 textarea {
@@ -72,6 +73,7 @@ button {
 button:hover {
   background: var(--accent-hover);
 }
+
 /* Ergebnis-Tabelle im Browser: Dark Mode */
 #resultTable {
   width: 100%;
@@ -81,14 +83,16 @@ button:hover {
   background: var(--bg-container);
   color: var(--text-color);
 }
-#resultTable th, 
+#resultTable th {
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  text-align: center;
+  background: var(--bg-header);
+}
 #resultTable td {
   border: 1px solid var(--border-color);
   padding: 10px;
-  text-align: left;
-}
-#resultTable th {
-  background: var(--bg-header);
+  text-align: center;
 }
 .footer-row td {
   font-weight: bold;
@@ -107,7 +111,7 @@ button:hover {
   overflow-x: auto;
 }
 
-/* In den Zellen der Schülerzahlen linksbündig ausrichten */
+/* In den Zellen der Schülerzahlen (Haupttermin und Nachtermin) linksbündig ausrichten */
 td[class^="count-h-"],
 td[class^="count-n-"] {
   text-align: left;
@@ -117,7 +121,7 @@ td[class^="count-n-"] {
 .badge {
   display: inline-block;
   height: 16px;            /* Feste Höhe, identisch zur minimalen Breite */
-  line-height: 16px;       /* Damit der Text vertikal zentriert ist */
+  line-height: 16px;       /* Vertikale Zentrierung des Textes */
   box-sizing: border-box;  /* Padding und Border werden in der Breite berücksichtigt */
   text-align: center;      /* Text im Badge zentriert */
   background-color: var(--accent-color);
@@ -125,5 +129,5 @@ td[class^="count-n-"] {
   border-radius: 0.25rem;
   font-size: 0.9em;
   font-weight: bold;
-  padding: 0;              /* Keine zusätzlichen Abstände, damit minimal Breite = Höhe */
+  padding: 0;              /* Keine zusätzlichen Abstände */
 }
