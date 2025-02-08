@@ -1,14 +1,28 @@
+/* CSS-Variablen definieren */
+:root {
+  --bg-dark: #121212;
+  --bg-container: #1e1e1e;
+  --bg-hover: #444;
+  --bg-header: #333;
+  --bg-footer: #2a2a2a;
+  --text-color: #ccc;
+  --label-color: #aaa;
+  --border-color: #555;
+  --accent-color: #007BFF;
+  --accent-hover: #0056b3;
+}
+
 /* Dark Mode */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #121212;
-  color: #ccc; /* dezente, nicht zu helle Schrift */
+  background: var(--bg-dark);
+  color: var(--text-color);
   margin: 0;
   padding: 20px;
 }
 .container {
   max-width: 800px;
-  background: #1e1e1e;
+  background: var(--bg-container);
   padding: 20px;
   margin: 0 auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -17,11 +31,11 @@ body {
 h1 {
   text-align: center;
   margin-bottom: 20px;
-  color: #ccc;
+  color: var(--text-color);
 }
 label {
   font-weight: bold;
-  color: #aaa;
+  color: var(--label-color);
 }
 /* Inputs und Textareas */
 input[type="number"],
@@ -30,11 +44,11 @@ textarea {
   padding: 8px;
   margin-top: 5px;
   margin-bottom: 15px;
-  border: 1px solid #555;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 16px;
   background: #333;
-  color: #ccc;
+  color: var(--text-color);
 }
 .radio-group {
   margin-bottom: 15px;
@@ -42,10 +56,10 @@ textarea {
 .radio-group label {
   font-weight: normal;
   margin-right: 10px;
-  color: #aaa;
+  color: var(--label-color);
 }
 button {
-  background: #007BFF;
+  background: var(--accent-color);
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -56,7 +70,7 @@ button {
   margin-right: 10px;
 }
 button:hover {
-  background: #0056b3;
+  background: var(--accent-hover);
 }
 /* Ergebnis-Tabelle im Browser: Dark Mode */
 #resultTable {
@@ -64,19 +78,42 @@ button:hover {
   border-collapse: collapse;
   margin-top: 20px;
   font-size: 14px;
-  background: #1e1e1e;
-  color: #ccc;
+  background: var(--bg-container);
+  color: var(--text-color);
 }
 #resultTable th, 
 #resultTable td {
-  border: 1px solid #555;
+  border: 1px solid var(--border-color);
   padding: 10px;
   text-align: center;
 }
 #resultTable th {
-  background: #333;
+  background: var(--bg-header);
 }
 .footer-row td {
   font-weight: bold;
-  background: #2a2a2a;
+  background: var(--bg-footer);
+}
+
+/* Nur Hover-Effekt für Tabellenzeilen */
+#resultTable tbody tr:hover {
+  background-color: var(--bg-hover);
+  transition: background-color 0.3s ease;
+}
+
+/* Responsive Design: scrollbarer Container */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Badges: Die Zahlen in den Zellen werden in kleinen, auffälligen Boxen dargestellt */
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #fff;
+  background-color: var(--accent-color);
+  border-radius: 0.25rem;
 }
