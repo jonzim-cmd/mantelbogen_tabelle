@@ -17,6 +17,37 @@ function calculateGrades() {
   const hauptText = document.getElementById("haupttermin").value.trim();
   const nachText  = document.getElementById("nachtermin").value.trim();
 
+  // --- VALIDIERUNG DER EINGABEN ---
+  let errorMessages = [];
+  // Funktion, die Zeile für Zeile prüft, ob genau eine Zahl zwischen 1 und 6 vorliegt.
+  function validateInput(text, fieldName) {
+    let lines = text.split(/\r?\n/);
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i].trim();
+      if (line === "") continue; // Leere Zeilen überspringen
+      // Regex prüft, ob die Zeile exakt eine Ziffer zwischen 1 und 6 enthält.
+      if (!/^[1-6]$/.test(line)) {
+        errorMessages.push(
+          fieldName + ": Ungültige Eingabe in Zeile " + (i + 1) +
+          " ('" + line + "'). Es muss genau eine Zahl zwischen 1 und 6 pro Zeile stehen."
+        );
+      }
+    }
+  }
+  
+  validateInput(hauptText, "Ergebnisse Haupttermin");
+  validateInput(nachText, "Ergebnisse Nachtermin");
+
+  // Falls Fehler gefunden wurden, Fehlermeldung anzeigen und Verarbeitung abbrechen.
+  const errorDiv = document.getElementById("errorMessage");
+  if (errorMessages.length > 0) {
+    errorDiv.innerHTML = errorMessages.join("<br>");
+    return;  // Abbruch der weiteren Verarbeitung, solange die Eingaben fehlerhaft sind.
+  } else {
+    errorDiv.innerHTML = "";
+  }
+  // --- ENDE DER VALIDIERUNG ---
+
   // Zeilenweise einlesen; dabei werden eventuelle deutsche Dezimaltrennzeichen (Komma) konvertiert
   const parseLines = (text) => {
     return text ? text.split(/\r?\n/).map(x => parseFloat(x.replace(',', '.'))).filter(n => !isNaN(n)) : [];
@@ -244,7 +275,7 @@ window.addEventListener("DOMContentLoaded", function() {
   const originalHeightN = nachtermin.clientHeight;
 
   haupttermin.addEventListener("focus", function() {
-    haupttermin.style.height = "37em";
+    haupttermin.style.height = "35em";
   });
   haupttermin.addEventListener("blur", function() {
     haupttermin.style.height = originalHeightH + "px";
