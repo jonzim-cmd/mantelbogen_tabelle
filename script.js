@@ -43,9 +43,24 @@ function calculateGrades() {
   for (let i = 1; i <= 6; i++) {
     totalHCount += countH[i];
     totalNCount += countN[i];
-    // Den Inhalt der jeweiligen Badge setzen (innerhalb des <span class="badge">)
-    document.querySelector(".count-h-" + i + " .badge").textContent = countH[i] || 0;
-    document.querySelector(".count-n-" + i + " .badge").textContent = countN[i] || 0;
+    // Badge-Elemente in den entsprechenden Zellen
+    const badgeH = document.querySelector(".count-h-" + i + " .badge");
+    const badgeN = document.querySelector(".count-n-" + i + " .badge");
+    
+    badgeH.textContent = countH[i] || 0;
+    badgeN.textContent = countN[i] || 0;
+    
+    // Falls der Wert 0 ist, füge die Klasse "zero" hinzu, ansonsten entferne sie
+    if ((countH[i] || 0) === 0) {
+      badgeH.classList.add("zero");
+    } else {
+      badgeH.classList.remove("zero");
+    }
+    if ((countN[i] || 0) === 0) {
+      badgeN.classList.add("zero");
+    } else {
+      badgeN.classList.remove("zero");
+    }
   }
   const totalCount = totalHCount + totalNCount;
 
@@ -120,7 +135,6 @@ function calculateGrades() {
     maxBadgeCount = Math.max(maxBadgeCount, countH[i] || 0, countN[i] || 0);
   }
   // Definiere Mindest- und Maximalbreite (in Pixel)
-  // Minimale Dimension: 16px (Breite = Höhe = 16px) – so wie ursprünglich (sehr schmal)
   const minBadgeWidth = 16; 
   const maxBadgeWidth = 100; // Maximale Breite, ohne die Tabelle zu erweitern
 
@@ -173,17 +187,20 @@ document.querySelectorAll('input[name="notenschema"]').forEach(elem => {
 /* Initialer Aufruf */
 calculateGrades();
 
-/* Export-Code bleibt unverändert */
+/* Export-Code */
 document.getElementById("generatePDF").addEventListener("click", function(){
   const originalTable = document.getElementById("resultTable");
   const tableClone = originalTable.cloneNode(true);
 
-  // Alle Styles im Klon so überschreiben, dass ein helles Layout (weiß mit schwarzer Schrift) entsteht
+  // Überschreibe alle Styles im Klon so, dass ein helles Layout (weiß mit schwarzer Schrift) entsteht,
+  // aber lasse Elemente mit der Klasse "badge" unberührt.
   tableClone.style.background = "#fff";
   tableClone.style.color = "#000";
   tableClone.querySelectorAll('*').forEach(el => {
-    el.style.backgroundColor = "#fff";
-    el.style.color = "#000";
+    if (!el.classList.contains("badge")) {
+      el.style.backgroundColor = "#fff";
+      el.style.color = "#000";
+    }
   });
 
   // Temporärer, versteckter Container
