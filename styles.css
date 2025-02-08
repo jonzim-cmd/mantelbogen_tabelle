@@ -1,11 +1,14 @@
-/* Dark Mode */
+/* Dark Mode & Grundstil */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #121212;
   color: #ccc; /* dezente, nicht zu helle Schrift */
   margin: 0;
   padding: 20px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
 }
+
 .container {
   max-width: 800px;
   background: #1e1e1e;
@@ -14,15 +17,18 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
 }
+
 h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #ccc;
 }
+
 label {
   font-weight: bold;
   color: #aaa;
 }
+
 /* Inputs und Textareas */
 input[type="number"],
 textarea {
@@ -36,14 +42,17 @@ textarea {
   background: #333;
   color: #ccc;
 }
+
 .radio-group {
   margin-bottom: 15px;
 }
+
 .radio-group label {
   font-weight: normal;
   margin-right: 10px;
   color: #aaa;
 }
+
 button {
   background: #007BFF;
   color: #fff;
@@ -55,28 +64,90 @@ button {
   margin-top: 10px;
   margin-right: 10px;
 }
+
 button:hover {
   background: #0056b3;
 }
-/* Ergebnis-Tabelle im Browser: Dark Mode */
+
+/* Tabelle Styling */
 #resultTable {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
   font-size: 14px;
   background: #1e1e1e;
-  color: #ccc;
+  
+  /* Neue Styles */
+  --table-accent: #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
 #resultTable th, 
 #resultTable td {
-  border: 1px solid #555;
-  padding: 10px;
   text-align: center;
 }
+
 #resultTable th {
-  background: #333;
+  background: #252525;
+  color: #e0e0e0;
+  font-weight: 600;
+  padding: 14px;
+  border-bottom: 2px solid #333;
+  font-size: 0.9em;
 }
+
+#resultTable td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  transition: background 0.2s ease;
+}
+
+#resultTable tr:not(.footer-row):hover td {
+  background: #292929;
+}
+
+/* Zebra-Striping */
+#resultTable tr:nth-child(even) td {
+  background: #1f1f1f;
+}
+
 .footer-row td {
-  font-weight: bold;
-  background: #2a2a2a;
+  background: #2d2d2d!important;
+  font-size: 0.95em;
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #fff;
+  background-color: #6c757d;
+  border-radius: 12px;
+  margin: 0 2px;
+  transition: background 0.3s ease;
+}
+
+.badge:hover {
+  filter: brightness(1.2);
+}
+
+.badge-success {
+  background-color: #28a745;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+}
+
+.badge-info {
+  background-color: #17a2b8;
 }
