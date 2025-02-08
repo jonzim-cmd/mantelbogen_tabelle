@@ -31,11 +31,11 @@ body {
 h1 {
   text-align: center;
   margin-bottom: 20px;
-  color: #ffa500;
+  color: var(--text-color);
 }
 label {
   font-weight: bold;
-  color: var(--label-color);
+  color: #ffa500;
 }
 
 /* Inputs und Textareas */
