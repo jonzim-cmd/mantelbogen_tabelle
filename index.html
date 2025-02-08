@@ -46,67 +46,69 @@
     <button onclick="resetAll()">Alles zurücksetzen</button>
     <button onclick="resetGrades()">Ergebniseingabe zurücksetzen</button>
     
-    <!-- Ergebnis-Tabelle -->
-    <table id="resultTable">
-      <thead>
-        <tr>
-          <th>Notenschlüssel (Punkte)</th>
-          <th>Note</th>
-          <th>Anzahl der Schüler<br>Haupttermin</th>
-          <th>Anzahl der Schüler<br>Nachtermin</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr id="row-note-1">
-          <td class="range-1"></td>
-          <td>1</td>
-          <td class="count-h-1"></td>
-          <td class="count-n-1"></td>
-        </tr>
-        <tr id="row-note-2">
-          <td class="range-2"></td>
-          <td>2</td>
-          <td class="count-h-2"></td>
-          <td class="count-n-2"></td>
-        </tr>
-        <tr id="row-note-3">
-          <td class="range-3"></td>
-          <td>3</td>
-          <td class="count-h-3"></td>
-          <td class="count-n-3"></td>
-        </tr>
-        <tr id="row-note-4">
-          <td class="range-4"></td>
-          <td>4</td>
-          <td class="count-h-4"></td>
-          <td class="count-n-4"></td>
-        </tr>
-        <tr id="row-note-5">
-          <td class="range-5"></td>
-          <td>5</td>
-          <td class="count-h-5"></td>
-          <td class="count-n-5"></td>
-        </tr>
-        <tr id="row-note-6">
-          <td class="range-6"></td>
-          <td>6</td>
-          <td class="count-h-6"></td>
-          <td class="count-n-6"></td>
-        </tr>
-        <tr class="footer-row">
-          <td colspan="1">Klassendurchschnitt<br>(nur Haupttermin)</td>
-          <td colspan="3" id="avgH"></td>
-        </tr>
-        <tr class="footer-row">
-          <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
-          <td colspan="3" id="avgAll"></td>
-        </tr>
-        <!-- Gesamtzahlen-Zeile -->
-        <tr class="footer-row">
-          <td colspan="4" id="totalRow"></td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Ergebnis-Tabelle in scrollbarem Container -->
+    <div class="table-responsive">
+      <table id="resultTable">
+        <thead>
+          <tr>
+            <th>Notenschlüssel (Punkte)</th>
+            <th>Note</th>
+            <th>Anzahl der Schüler<br>Haupttermin</th>
+            <th>Anzahl der Schüler<br>Nachtermin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="row-note-1">
+            <td class="range-1"></td>
+            <td>1</td>
+            <td class="count-h-1"></td>
+            <td class="count-n-1"></td>
+          </tr>
+          <tr id="row-note-2">
+            <td class="range-2"></td>
+            <td>2</td>
+            <td class="count-h-2"></td>
+            <td class="count-n-2"></td>
+          </tr>
+          <tr id="row-note-3">
+            <td class="range-3"></td>
+            <td>3</td>
+            <td class="count-h-3"></td>
+            <td class="count-n-3"></td>
+          </tr>
+          <tr id="row-note-4">
+            <td class="range-4"></td>
+            <td>4</td>
+            <td class="count-h-4"></td>
+            <td class="count-n-4"></td>
+          </tr>
+          <tr id="row-note-5">
+            <td class="range-5"></td>
+            <td>5</td>
+            <td class="count-h-5"></td>
+            <td class="count-n-5"></td>
+          </tr>
+          <tr id="row-note-6">
+            <td class="range-6"></td>
+            <td>6</td>
+            <td class="count-h-6"></td>
+            <td class="count-n-6"></td>
+          </tr>
+          <tr class="footer-row">
+            <td colspan="1">Klassendurchschnitt<br>(nur Haupttermin)</td>
+            <td colspan="3" id="avgH"></td>
+          </tr>
+          <tr class="footer-row">
+            <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
+            <td colspan="3" id="avgAll"></td>
+          </tr>
+          <!-- Gesamtzahlen-Zeile -->
+          <tr class="footer-row">
+            <td colspan="4" id="totalRow"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     
     <!-- Button zum PDF-Export (wird nur angezeigt, wenn Noteneingaben vorliegen) -->
     <button id="generatePDF" style="display:none;">PDF erzeugen</button>
