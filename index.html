@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notenverteilung</title>
+  <title>Notenauswertung</title>
   <!-- Externe CSS-Datei einbinden -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Notenverteilung</h1>
+    <h1>Notenauswertung</h1>
     
     <!-- Auswahl des Notenschemas -->
     <div class="radio-group">
@@ -30,7 +30,7 @@
         Ergebnisse Haupttermin<br>
         (Noten, jeweils einen Wert pro Zeile)
       </label>
-      <textarea id="haupttermin" placeholder="z.B. 3&#10;2&#10;4&#10;..."></textarea>
+      <textarea id="haupttermin" placeholder="z.B. 3&#10;2&#10;4&#10;3&#10;2&#10;2&#10;4&#10;2&#10;3&#10;1&#10;4&#10;1&#10;4&#10;4&#10;4&#10;4&#10;4"></textarea>
     </div>
     
     <!-- Ergebnisse Nachtermin (Noten) -->
@@ -45,6 +45,9 @@
     <!-- Buttons -->
     <button onclick="resetAll()">Alles zurücksetzen</button>
     <button onclick="resetGrades()">Ergebniseingabe zurücksetzen</button>
+    
+    <!-- Fehlermeldungsfeld -->
+    <div id="errorMessage" style="color: red; margin-bottom: 10px;"></div>
     
     <!-- Ergebnis-Tabelle in scrollbarem Container -->
     <div class="table-responsive">
