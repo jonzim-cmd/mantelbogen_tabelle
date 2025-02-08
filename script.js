@@ -43,8 +43,9 @@ function calculateGrades() {
   for (let i = 1; i <= 6; i++) {
     totalHCount += countH[i];
     totalNCount += countN[i];
-    document.querySelector(".count-h-" + i).textContent = countH[i] || 0;
-    document.querySelector(".count-n-" + i).textContent = countN[i] || 0;
+    // Hier wird gezielt das Kind-Element (Badge) aktualisiert
+    document.querySelector(".count-h-" + i + " .badge").textContent = countH[i] || 0;
+    document.querySelector(".count-n-" + i + " .badge").textContent = countN[i] || 0;
   }
   const totalCount = totalHCount + totalNCount;
 
