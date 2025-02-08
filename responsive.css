@@ -1,7 +1,0 @@
-/* Responsive Styles für Ergebnis Tabelle */
-@media (max-width: 600px) {
-  #resultTable {
-    display: block;
-    overflow-x: auto;
-  }
-}
