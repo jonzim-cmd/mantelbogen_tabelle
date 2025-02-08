@@ -233,3 +233,27 @@ document.getElementById("generatePDF").addEventListener("click", function(){
     document.body.removeChild(hiddenContainer);
   });
 });
+
+/* Erweiterung: Vergrößerung der Textareas beim Fokussieren und Wiederherstellung der ursprünglichen Größe */
+window.addEventListener("DOMContentLoaded", function() {
+  const haupttermin = document.getElementById("haupttermin");
+  const nachtermin = document.getElementById("nachtermin");
+
+  // Speichere die ursprüngliche Höhe der Textareas
+  const originalHeightH = haupttermin.clientHeight;
+  const originalHeightN = nachtermin.clientHeight;
+
+  haupttermin.addEventListener("focus", function() {
+    haupttermin.style.height = "35em";
+  });
+  haupttermin.addEventListener("blur", function() {
+    haupttermin.style.height = originalHeightH + "px";
+  });
+
+  nachtermin.addEventListener("focus", function() {
+    nachtermin.style.height = "15em";
+  });
+  nachtermin.addEventListener("blur", function() {
+    nachtermin.style.height = originalHeightN + "px";
+  });
+});
