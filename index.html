@@ -4,119 +4,144 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notenauswertung</title>
-  <!-- Externe CSS-Datei einbinden -->
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS (v5) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <div class="container">
-    <h1>Notenauswertung</h1>
-    
-    <!-- Auswahl des Notenschemas -->
-    <div class="radio-group">
-      <label>Notengrenzen:</label>
-      <label><input type="radio" name="notenschema" value="ihk" checked> IHK (92%)</label>
-      <label><input type="radio" name="notenschema" value="ap"> AP/3.SA (85%)</label>
+<body class="dark-mode">
+  <!-- Navigation mit Dark/Light Mode Toggle -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Notenauswertung</a>
+      <button class="btn btn-outline-light ms-auto" id="toggleTheme">Light Mode</button>
     </div>
-    
-    <!-- Eingabe maximaler Punkte -->
-    <div>
-      <label for="maxPoints">Max. Punkte:</label>
-      <input type="number" id="maxPoints" placeholder="z.B. 100" />
+  </nav>
+  
+  <div class="container my-4">
+    <div class="card p-4">
+      <h1 class="text-center mb-4">Notenauswertung</h1>
+      
+      <!-- Notenschema-Auswahl -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Notengrenzen:</label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="notenschema" id="ihkRadio" value="ihk" checked>
+          <label class="form-check-label" for="ihkRadio">IHK (92%)</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="notenschema" id="apRadio" value="ap">
+          <label class="form-check-label" for="apRadio">AP/3.SA (85%)</label>
+        </div>
+      </div>
+      
+      <!-- Maximale Punkte -->
+      <div class="mb-3">
+        <label for="maxPoints" class="form-label">Max. Punkte:</label>
+        <input type="number" class="form-control" id="maxPoints" placeholder="z.B. 100">
+      </div>
+      
+      <!-- Ergebnisse Haupttermin -->
+      <div class="mb-3">
+        <label for="haupttermin" class="form-label">Ergebnisse Haupttermin (Noten, jeweils einen Wert pro Zeile):</label>
+        <textarea class="form-control" id="haupttermin" rows="5" placeholder="z.B. 3&#10;2&#10;4&#10;3&#10;2&#10;2&#10;4&#10;2&#10;3&#10;1&#10;4&#10;1&#10;4&#10;4&#10;4&#10;4&#10;4"></textarea>
+      </div>
+      
+      <!-- Ergebnisse Nachtermin -->
+      <div class="mb-3">
+        <label for="nachtermin" class="form-label">Ergebnisse Nachtermin (Noten, jeweils einen Wert pro Zeile):</label>
+        <textarea class="form-control" id="nachtermin" rows="3" placeholder="z.B. 3&#10;2&#10;4&#10;..."></textarea>
+      </div>
+      
+      <!-- Buttons -->
+      <div class="mb-3">
+        <button class="btn btn-primary me-2" onclick="resetAll()">Alles zurücksetzen</button>
+        <button class="btn btn-secondary" onclick="resetGrades()">Ergebniseingabe zurücksetzen</button>
+      </div>
+      
+      <!-- Ergebnis-Tabelle -->
+      <div class="mb-3">
+        <div class="table-responsive">
+          <table id="resultTable" class="table table-bordered text-center">
+            <thead>
+              <tr>
+                <th>Notenschlüssel (Punkte)</th>
+                <th>Note</th>
+                <th>Anzahl der Schüler<br>Haupttermin</th>
+                <th>Anzahl der Schüler<br>Nachtermin</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="row-note-1">
+                <td class="range-1"></td>
+                <td>1</td>
+                <td class="count-h-1"></td>
+                <td class="count-n-1"></td>
+              </tr>
+              <tr id="row-note-2">
+                <td class="range-2"></td>
+                <td>2</td>
+                <td class="count-h-2"></td>
+                <td class="count-n-2"></td>
+              </tr>
+              <tr id="row-note-3">
+                <td class="range-3"></td>
+                <td>3</td>
+                <td class="count-h-3"></td>
+                <td class="count-n-3"></td>
+              </tr>
+              <tr id="row-note-4">
+                <td class="range-4"></td>
+                <td>4</td>
+                <td class="count-h-4"></td>
+                <td class="count-n-4"></td>
+              </tr>
+              <tr id="row-note-5">
+                <td class="range-5"></td>
+                <td>5</td>
+                <td class="count-h-5"></td>
+                <td class="count-n-5"></td>
+              </tr>
+              <tr id="row-note-6">
+                <td class="range-6"></td>
+                <td>6</td>
+                <td class="count-h-6"></td>
+                <td class="count-n-6"></td>
+              </tr>
+              <tr class="table-secondary">
+                <td colspan="1">Klassendurchschnitt<br>(nur Haupttermin)</td>
+                <td colspan="3" id="avgH"></td>
+              </tr>
+              <tr class="table-secondary">
+                <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
+                <td colspan="3" id="avgAll"></td>
+              </tr>
+              <tr class="table-secondary">
+                <td colspan="4" id="totalRow"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- PDF-Export Button -->
+      <div class="mb-3 text-center">
+        <button class="btn btn-success" id="generatePDF" style="display:none;">PDF erzeugen</button>
+      </div>
     </div>
-    
-    <!-- Ergebnisse Haupttermin (Noten) -->
-    <div>
-      <label for="haupttermin">
-        Ergebnisse Haupttermin<br>
-        (Noten, jeweils einen Wert pro Zeile)
-      </label>
-      <textarea id="haupttermin" placeholder="z.B. 3&#10;2&#10;4&#10;3&#10;2&#10;2&#10;4&#10;2&#10;3&#10;1&#10;4&#10;1&#10;4&#10;4&#10;4&#10;4&#10;4"></textarea>
-    </div>
-    
-    <!-- Ergebnisse Nachtermin (Noten) -->
-    <div>
-      <label for="nachtermin">
-        Ergebnisse Nachtermin<br>
-        (Noten, jeweils einen Wert pro Zeile)
-      </label>
-      <textarea id="nachtermin" placeholder="z.B. 3&#10;2&#10;4&#10;..."></textarea>
-    </div>
-    
-    <!-- Buttons -->
-    <button onclick="resetAll()">Alles zurücksetzen</button>
-    <button onclick="resetGrades()">Ergebniseingabe zurücksetzen</button>
-    
-    <!-- Ergebnis-Tabelle -->
-    <table id="resultTable">
-      <thead>
-        <tr>
-          <th>Notenschlüssel (Punkte)</th>
-          <th>Note</th>
-          <th>Anzahl der Schüler<br>Haupttermin</th>
-          <th>Anzahl der Schüler<br>Nachtermin</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr id="row-note-1">
-          <td class="range-1"></td>
-          <td>1</td>
-          <td class="count-h-1"></td>
-          <td class="count-n-1"></td>
-        </tr>
-        <tr id="row-note-2">
-          <td class="range-2"></td>
-          <td>2</td>
-          <td class="count-h-2"></td>
-          <td class="count-n-2"></td>
-        </tr>
-        <tr id="row-note-3">
-          <td class="range-3"></td>
-          <td>3</td>
-          <td class="count-h-3"></td>
-          <td class="count-n-3"></td>
-        </tr>
-        <tr id="row-note-4">
-          <td class="range-4"></td>
-          <td>4</td>
-          <td class="count-h-4"></td>
-          <td class="count-n-4"></td>
-        </tr>
-        <tr id="row-note-5">
-          <td class="range-5"></td>
-          <td>5</td>
-          <td class="count-h-5"></td>
-          <td class="count-n-5"></td>
-        </tr>
-        <tr id="row-note-6">
-          <td class="range-6"></td>
-          <td>6</td>
-          <td class="count-h-6"></td>
-          <td class="count-n-6"></td>
-        </tr>
-        <tr class="footer-row">
-          <td colspan="1">Klassendurchschnitt<br>(nur Haupttermin)</td>
-          <td colspan="3" id="avgH"></td>
-        </tr>
-        <tr class="footer-row">
-          <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
-          <td colspan="3" id="avgAll"></td>
-        </tr>
-        <!-- Gesamtzahlen-Zeile -->
-        <tr class="footer-row">
-          <td colspan="4" id="totalRow"></td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <!-- Button zum PDF-Export (wird nur angezeigt, wenn Noteneingaben vorliegen) -->
-    <button id="generatePDF" style="display:none;">PDF erzeugen</button>
   </div>
   
-  <!-- Einbindung der externen Bibliotheken (CDNs) -->
+  <!-- Externe Bibliotheken für den PDF-Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Bootstrap Bundle JS (für interaktive Komponenten, falls benötigt) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Externe JavaScript-Dateien -->
+  <!-- Eigene JavaScript-Dateien -->
   <script src="script.js"></script>
   <script src="export.js"></script>
 </body>
