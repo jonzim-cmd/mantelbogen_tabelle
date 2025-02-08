@@ -85,7 +85,7 @@ button:hover {
 #resultTable td {
   border: 1px solid var(--border-color);
   padding: 10px;
-  text-align: center;
+  text-align: left;
 }
 #resultTable th {
   background: var(--bg-header);
