@@ -116,4 +116,5 @@ button:hover {
   color: #fff;
   background-color: var(--accent-color);
   border-radius: 0.25rem;
+  text-align: left;  /* linksbündige Ausrichtung */
 }
