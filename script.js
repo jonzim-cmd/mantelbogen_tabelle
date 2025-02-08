@@ -43,9 +43,24 @@ function calculateGrades() {
   for (let i = 1; i <= 6; i++) {
     totalHCount += countH[i];
     totalNCount += countN[i];
-    // Hier wird gezielt das Kind-Element (Badge) aktualisiert
-    document.querySelector(".count-h-" + i + " .badge").textContent = countH[i] || 0;
-    document.querySelector(".count-n-" + i + " .badge").textContent = countN[i] || 0;
+    // Badge-Elemente in den entsprechenden Zellen
+    const badgeH = document.querySelector(".count-h-" + i + " .badge");
+    const badgeN = document.querySelector(".count-n-" + i + " .badge");
+    
+    badgeH.textContent = countH[i] || 0;
+    badgeN.textContent = countN[i] || 0;
+    
+    // Falls der Wert 0 ist, füge die Klasse "zero" hinzu, ansonsten entferne sie
+    if ((countH[i] || 0) === 0) {
+      badgeH.classList.add("zero");
+    } else {
+      badgeH.classList.remove("zero");
+    }
+    if ((countN[i] || 0) === 0) {
+      badgeN.classList.add("zero");
+    } else {
+      badgeN.classList.remove("zero");
+    }
   }
   const totalCount = totalHCount + totalNCount;
 
@@ -113,6 +128,30 @@ function calculateGrades() {
     }
   }
 
+  // Dynamische Skalierung der Badge-Breite:
+  // Ermittele den höchsten Zählwert aus allen Badges (Haupt- und Nachtermin)
+  let maxBadgeCount = 0;
+  for (let i = 1; i <= 6; i++) {
+    maxBadgeCount = Math.max(maxBadgeCount, countH[i] || 0, countN[i] || 0);
+  }
+  // Definiere Mindest- und Maximalbreite (in Pixel)
+  const minBadgeWidth = 16; 
+  const maxBadgeWidth = 100; // Maximale Breite, ohne die Tabelle zu erweitern
+
+  // Setze die Breite für jede Badge anhand des Anteils am Maximalwert
+  for (let i = 1; i <= 6; i++) {
+    const badgeH = document.querySelector(".count-h-" + i + " .badge");
+    const badgeN = document.querySelector(".count-n-" + i + " .badge");
+    let widthH = minBadgeWidth;
+    let widthN = minBadgeWidth;
+    if (maxBadgeCount > 0) {
+      widthH += (countH[i] / maxBadgeCount) * (maxBadgeWidth - minBadgeWidth);
+      widthN += (countN[i] / maxBadgeCount) * (maxBadgeWidth - minBadgeWidth);
+    }
+    badgeH.style.width = widthH + "px";
+    badgeN.style.width = widthN + "px";
+  }
+
   // PDF-Button nur anzeigen, wenn Noteneingaben vorliegen
   if (hauptNotes.length + nachNotes.length > 0) {
     document.getElementById("generatePDF").style.display = "inline-block";
@@ -147,3 +186,50 @@ document.querySelectorAll('input[name="notenschema"]').forEach(elem => {
 
 /* Initialer Aufruf */
 calculateGrades();
+
+/* Export-Code */
+document.getElementById("generatePDF").addEventListener("click", function(){
+  const originalTable = document.getElementById("resultTable");
+  const tableClone = originalTable.cloneNode(true);
+
+  // Überschreibe alle Styles im Klon so, dass ein helles Layout (weiß mit schwarzer Schrift) entsteht,
+  // aber lasse Elemente mit der Klasse "badge" unberührt.
+  tableClone.style.background = "#fff";
+  tableClone.style.color = "#000";
+  tableClone.querySelectorAll('*').forEach(el => {
+    if (!el.classList.contains("badge")) {
+      el.style.backgroundColor = "#fff";
+      el.style.color = "#000";
+    }
+  });
+
+  // Temporärer, versteckter Container
+  const hiddenContainer = document.createElement("div");
+  hiddenContainer.style.position = "fixed";
+  hiddenContainer.style.top = "-10000px";
+  hiddenContainer.style.left = "-10000px";
+  hiddenContainer.appendChild(tableClone);
+  document.body.appendChild(hiddenContainer);
+
+  html2canvas(tableClone).then(function(canvas) {
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "pt", "a4");
+    const pdfWidth  = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const margin = 70.87; // ca. 2,5 cm Rand
+    const availableWidth = pdfWidth - 2 * margin;
+    const availableHeight = pdfHeight - 2 * margin;
+    const imgProps = pdf.getImageProperties(imgData);
+    const originalImgWidth  = imgProps.width;
+    const originalImgHeight = imgProps.height;
+    const scale = Math.min(availableWidth / originalImgWidth, availableHeight / originalImgHeight);
+    const imgDisplayWidth = originalImgWidth * scale;
+    const imgDisplayHeight = originalImgHeight * scale;
+    const x = margin + (availableWidth - imgDisplayWidth) / 2;
+    const y = margin + (availableHeight - imgDisplayHeight) / 2;
+    pdf.addImage(imgData, 'PNG', x, y, imgDisplayWidth, imgDisplayHeight);
+    pdf.save("Notenauswertung.pdf");
+    document.body.removeChild(hiddenContainer);
+  });
+});

@@ -37,6 +37,7 @@ label {
   font-weight: bold;
   color: var(--label-color);
 }
+
 /* Inputs und Textareas */
 input[type="number"],
 textarea {
@@ -72,6 +73,7 @@ button {
 button:hover {
   background: var(--accent-hover);
 }
+
 /* Ergebnis-Tabelle im Browser: Dark Mode */
 #resultTable {
   width: 100%;
@@ -107,13 +109,28 @@ button:hover {
   overflow-x: auto;
 }
 
-/* Badges: Die Zahlen in den Zellen werden in kleinen, auffälligen Boxen dargestellt */
+/* Spezifische Ausrichtung der Schülerzahlenzellen (Haupt- und Nachtermin) */
+#resultTable td[class^="count-h-"],
+#resultTable td[class^="count-n-"] {
+  text-align: left;
+}
+
+/* Badge-Stil */
 .badge {
   display: inline-block;
-  padding: 0.25em 0.5em;
+  height: 16px;            /* Feste Höhe, identisch zur minimalen Breite */
+  line-height: 16px;       /* Vertikale Zentrierung des Textes */
+  box-sizing: border-box;  /* Padding und Border werden in der Breite berücksichtigt */
+  text-align: center;      /* Text im Badge zentriert */
+  background-color: var(--accent-color);
+  color: #fff;
+  border-radius: 0.25rem;
   font-size: 0.9em;
   font-weight: bold;
-  color: #fff;
-  background-color: var(--accent-color);
-  border-radius: 0.25rem;
+  padding: 0;
+}
+
+/* Badges mit dem Wert 0 leicht transparent darstellen */
+.badge.zero {
+  opacity: 0.5;
 }
