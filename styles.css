@@ -107,7 +107,13 @@ button:hover {
   overflow-x: auto;
 }
 
-/* Badges: Die Zahlen in den Zellen werden in kleinen, auffälligen Boxen dargestellt */
+/* In den Zellen der Schülerzahlen linksbündig ausrichten */
+td[class^="count-h-"],
+td[class^="count-n-"] {
+  text-align: left;
+}
+
+/* Badge-Stil (wie gehabt, hier mit linksbündiger Textausrichtung) */
 .badge {
   display: inline-block;
   padding: 0.25em 0.5em;
@@ -116,5 +122,5 @@ button:hover {
   color: #fff;
   background-color: var(--accent-color);
   border-radius: 0.25rem;
-  text-align: left;  /* linksbündige Ausrichtung */
+  text-align: left;
 }
