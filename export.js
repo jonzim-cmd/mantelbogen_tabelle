@@ -2,15 +2,18 @@ document.getElementById("generatePDF").addEventListener("click", function(){
   const originalTable = document.getElementById("resultTable");
   const tableClone = originalTable.cloneNode(true);
 
-  // Alle Styles im Klon so überschreiben, dass ein helles Layout (weiß mit schwarzer Schrift) entsteht
+  // Überschreibe alle Styles im Klon, sodass ein helles Layout (weiß mit schwarzer Schrift) entsteht,
+  // aber lasse Elemente mit der Klasse "badge" unberührt.
   tableClone.style.background = "#fff";
   tableClone.style.color = "#000";
   tableClone.querySelectorAll('*').forEach(el => {
-    el.style.backgroundColor = "#fff";
-    el.style.color = "#000";
+    if (!el.classList.contains("badge")) {
+      el.style.backgroundColor = "#fff";
+      el.style.color = "#000";
+    }
   });
 
-  // Temporärer, versteckter Container
+  // Temporärer, versteckter Container für den Klon
   const hiddenContainer = document.createElement("div");
   hiddenContainer.style.position = "fixed";
   hiddenContainer.style.top = "-10000px";
