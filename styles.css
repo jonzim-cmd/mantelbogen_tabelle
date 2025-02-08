@@ -112,3 +112,8 @@ button:hover {
   width: 100%;
   overflow-x: auto;
 }
+
+/* Zusätzliche Styles für das Chart */
+.distribution-chart-cell {
+  vertical-align: middle;
+}
