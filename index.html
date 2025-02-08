@@ -3,121 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notenauswertung</title>
-  <!-- Externe CSS-Datei einbinden -->
+  <title>Ergebnis Tabelle</title>
+  <!-- Haupt-CSS -->
   <link rel="stylesheet" href="styles.css">
+  <!-- Responsive CSS -->
+  <link rel="stylesheet" href="responsive.css">
 </head>
 <body>
   <div class="container">
-    <h1>Notenauswertung</h1>
-    
-    <!-- Auswahl des Notenschemas -->
-    <div class="radio-group">
-      <label>Notengrenzen:</label>
-      <label><input type="radio" name="notenschema" value="ihk" checked> IHK (92%)</label>
-      <label><input type="radio" name="notenschema" value="ap"> AP/3.SA (85%)</label>
-    </div>
-    
-    <!-- Eingabe maximaler Punkte -->
-    <div>
-      <label for="maxPoints">Max. Punkte:</label>
-      <input type="number" id="maxPoints" placeholder="z.B. 100" />
-    </div>
-    
-    <!-- Ergebnisse Haupttermin (Noten) -->
-    <div>
-      <label for="haupttermin">
-        Ergebnisse Haupttermin<br>
-        (Noten, jeweils einen Wert pro Zeile)
-      </label>
-      <textarea id="haupttermin" placeholder="z.B. 3&#10;2&#10;4&#10;3&#10;2&#10;2&#10;4&#10;2&#10;3&#10;1&#10;4&#10;1&#10;4&#10;4&#10;4&#10;4&#10;4"></textarea>
-    </div>
-    
-    <!-- Ergebnisse Nachtermin (Noten) -->
-    <div>
-      <label for="nachtermin">
-        Ergebnisse Nachtermin<br>
-        (Noten, jeweils einen Wert pro Zeile)
-      </label>
-      <textarea id="nachtermin" placeholder="z.B. 3&#10;2&#10;4&#10;..."></textarea>
-    </div>
-    
-    <!-- Buttons -->
-    <button onclick="resetAll()">Alles zurücksetzen</button>
-    <button onclick="resetGrades()">Ergebniseingabe zurücksetzen</button>
-    
-    <!-- Ergebnis-Tabelle -->
+    <h1>Ergebnis Tabelle</h1>
+
+    <!-- Beispielhafte Tabelle mit Badges -->
     <table id="resultTable">
       <thead>
         <tr>
-          <th>Notenschlüssel (Punkte)</th>
-          <th>Note</th>
-          <th>Anzahl der Schüler<br>Haupttermin</th>
-          <th>Anzahl der Schüler<br>Nachtermin</th>
+          <th>Status</th>
+          <th>Beschreibung</th>
+          <th>Wert</th>
         </tr>
       </thead>
       <tbody>
-        <tr id="row-note-1">
-          <td class="range-1"></td>
-          <td>1</td>
-          <td class="count-h-1"></td>
-          <td class="count-n-1"></td>
+        <tr>
+          <td><span class="badge badge-success">Aktiv</span></td>
+          <td>Prozess läuft einwandfrei</td>
+          <td><span class="badge badge-info">123</span></td>
         </tr>
-        <tr id="row-note-2">
-          <td class="range-2"></td>
-          <td>2</td>
-          <td class="count-h-2"></td>
-          <td class="count-n-2"></td>
+        <tr>
+          <td><span class="badge badge-warning">Achtung</span></td>
+          <td>Kleine Unstimmigkeiten erkannt</td>
+          <td><span class="badge badge-info">45</span></td>
         </tr>
-        <tr id="row-note-3">
-          <td class="range-3"></td>
-          <td>3</td>
-          <td class="count-h-3"></td>
-          <td class="count-n-3"></td>
-        </tr>
-        <tr id="row-note-4">
-          <td class="range-4"></td>
-          <td>4</td>
-          <td class="count-h-4"></td>
-          <td class="count-n-4"></td>
-        </tr>
-        <tr id="row-note-5">
-          <td class="range-5"></td>
-          <td>5</td>
-          <td class="count-h-5"></td>
-          <td class="count-n-5"></td>
-        </tr>
-        <tr id="row-note-6">
-          <td class="range-6"></td>
-          <td>6</td>
-          <td class="count-h-6"></td>
-          <td class="count-n-6"></td>
-        </tr>
-        <tr class="footer-row">
-          <td colspan="1">Klassendurchschnitt<br>(nur Haupttermin)</td>
-          <td colspan="3" id="avgH"></td>
-        </tr>
-        <tr class="footer-row">
-          <td colspan="1">Klassendurchschnitt<br>(alle Termine)</td>
-          <td colspan="3" id="avgAll"></td>
-        </tr>
-        <!-- Gesamtzahlen-Zeile -->
-        <tr class="footer-row">
-          <td colspan="4" id="totalRow"></td>
+        <tr>
+          <td><span class="badge badge-danger">Fehler</span></td>
+          <td>Kritischer Systemfehler</td>
+          <td><span class="badge badge-info">0</span></td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr class="footer-row">
+          <td colspan="3">Gesamt: 3 Einträge</td>
+        </tr>
+      </tfoot>
     </table>
-    
-    <!-- Button zum PDF-Export (wird nur angezeigt, wenn Noteneingaben vorliegen) -->
-    <button id="generatePDF" style="display:none;">PDF erzeugen</button>
   </div>
-  
-  <!-- Einbindung der externen Bibliotheken (CDNs) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  
-  <!-- Externe JavaScript-Dateien -->
-  <script src="script.js"></script>
-  <script src="export.js"></script>
 </body>
 </html>
