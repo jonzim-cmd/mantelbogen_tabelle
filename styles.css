@@ -109,9 +109,7 @@ button:hover {
   overflow-x: auto;
 }
 
-/* Spezifische Ausrichtung der Schülerzahlenzellen (Haupt- und Nachtermin):
-   Durch Hinzufügen von #resultTable vor dem Selektor wird diese Regel 
-   spezifischer als die allgemeine Regel, sodass diese Zellen links ausgerichtet werden. */
+/* Spezifische Ausrichtung der Schülerzahlenzellen (Haupt- und Nachtermin) */
 #resultTable td[class^="count-h-"],
 #resultTable td[class^="count-n-"] {
   text-align: left;
@@ -129,5 +127,10 @@ button:hover {
   border-radius: 0.25rem;
   font-size: 0.9em;
   font-weight: bold;
-  padding: 0;              /* Keine zusätzlichen Abstände */
+  padding: 0;
+}
+
+/* Badges mit dem Wert 0 leicht transparent darstellen */
+.badge.zero {
+  opacity: 0.5;
 }
