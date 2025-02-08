@@ -3,7 +3,6 @@
   --bg-dark: #121212;
   --bg-container: #1e1e1e;
   --bg-hover: #444;
-  --bg-stripe: #2e2e2e;
   --bg-header: #333;
   --bg-footer: #2a2a2a;
   --text-color: #ccc;
@@ -11,6 +10,7 @@
   --border-color: #555;
   --accent-color: #007BFF;
   --accent-hover: #0056b3;
+  --count-bg: rgba(255, 255, 255, 0.1); /* Hintergrundfarbe für Zellen mit Zahlen */
 }
 
 /* Dark Mode */
@@ -96,12 +96,7 @@ button:hover {
   background: var(--bg-footer);
 }
 
-/* Zebra-Striping für bessere Lesbarkeit */
-#resultTable tbody tr:nth-child(even) {
-  background-color: var(--bg-stripe);
-}
-
-/* Hover-Effekt für Tabellenzeilen */
+/* Nur Hover-Effekt für Tabellenzeilen */
 #resultTable tbody tr:hover {
   background-color: var(--bg-hover);
   transition: background-color 0.3s ease;
@@ -113,7 +108,14 @@ button:hover {
   overflow-x: auto;
 }
 
-/* Zusätzliche Styles für das Chart */
-.distribution-chart-cell {
-  vertical-align: middle;
+/* Verbesserung der Sichtbarkeit der Zahlen in den Zellen:
+   Die Zellen, die mit den Klassen "count-h-*" und "count-n-*" versehen sind,
+   erhalten einen dezent kontrastierenden Hintergrund, eine größere Schrift und
+   einen kräftigeren Font, sodass die Zahlen schneller erfasst werden können. */
+td[class^="count-h-"],
+td[class^="count-n-"] {
+  font-weight: bold;
+  font-size: 16px;
+  background-color: var(--count-bg);
+  border-radius: 4px;
 }
