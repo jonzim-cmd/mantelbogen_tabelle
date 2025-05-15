@@ -1,9 +1,11 @@
 /* Hilfsfunktionen zum Runden auf halbe Punktwerte */
 function roundUpToNearestHalf(value) {
-  return Math.ceil(value * 2) / 2;
+  const v = Number(value.toFixed(8));   // IEEE-754-Reste abschneiden
+  return Math.ceil(v * 2) / 2;
 }
 function roundDownToNearestHalf(value) {
-  return Math.floor(value * 2) / 2;
+  const v = Number(value.toFixed(8));
+  return Math.floor(v * 2) / 2;
 }
 
 /* Funktion zur Berechnung der Notenauswertung */
