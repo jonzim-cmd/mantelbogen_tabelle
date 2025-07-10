@@ -133,9 +133,9 @@ function calculateGrades() {
     ];
   } else {
     noteBoundaries = [
-      { note: 1, min: 0.85 },
-      { note: 2, min: 0.70 },
-      { note: 3, min: 0.55 },
+      { note: 1, min: 0.86 },
+      { note: 2, min: 0.71 },
+      { note: 3, min: 0.56 },
       { note: 4, min: 0.41 },
       { note: 5, min: 0.20 },
       { note: 6, min: 0.00 }
