@@ -1,3 +1,7 @@
+/* Konstante für numerische Robustheit und Schrittweite */
+const EPS = 1e-8;
+const POINT_STEP = 0.5;
+
 /* Hilfsfunktionen zum Runden auf halbe Punktwerte */
 function roundUpToNearestHalf(value) {
   const v = Number(value.toFixed(8));   // IEEE-754-Reste abschneiden
@@ -6,6 +10,64 @@ function roundUpToNearestHalf(value) {
 function roundDownToNearestHalf(value) {
   const v = Number(value.toFixed(8));
   return Math.floor(v * 2) / 2;
+}
+
+/* Notenschemata (wie im Notenrechner) */
+const ihkThresholds = {
+  1: 0.92,
+  2: 0.81,
+  3: 0.67,
+  4: 0.50,
+  5: 0.30,
+  6: 0.00
+};
+
+const apThresholds = {
+  1: 0.86,
+  2: 0.71,
+  3: 0.56,
+  4: 0.41,
+  5: 0.20,
+  6: 0.00
+};
+
+/* Prozentberechnung und Notenlogik wie im Notenrechner */
+function percentFromPoints(achieved, max) {
+  // Einheitliche Rundung auf 2 Nachkommastellen
+  return parseFloat(((achieved / max) * 100).toFixed(2));
+}
+
+function gradeFromPercent(pct, thresholds) {
+  for (let g = 1; g <= 6; g++) {
+    if (pct >= thresholds[g] * 100) return g;
+  }
+  return 6;
+}
+
+function gradeFromPoints(max, achieved, thresholds) {
+  return gradeFromPercent(percentFromPoints(achieved, max), thresholds);
+}
+
+/* Diskrete 0,5er-Buckets (identisch zur Logik im Notenrechner) */
+function computeHalfStepRanges(max, thresholds) {
+  const ranges = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
+  const cap = roundDownToNearestHalf(Number(max));
+
+  const steps = Math.floor((cap + EPS) / POINT_STEP);
+  for (let i = 0; i <= steps; i++) {
+    const p = Number((i * POINT_STEP).toFixed(8));
+    const g = gradeFromPoints(max, p, thresholds);
+    if (!ranges[g]) ranges[g] = { min: p, max: p };
+    else ranges[g].max = p;
+  }
+
+  // Falls max z.B. 12,7 ist, wird dieser Wert ebenfalls gebucketet
+  if (Math.abs(max - cap) > EPS) {
+    const g = gradeFromPoints(max, max, thresholds);
+    if (!ranges[g]) ranges[g] = { min: max, max: max };
+    else ranges[g].max = Math.max(ranges[g].max, max);
+  }
+  return ranges;
 }
 
 /* Funktion zur Berechnung der Notenauswertung */
@@ -111,7 +173,7 @@ function calculateGrades() {
     " | Nachtermin: " + totalNCount +
     " | Gesamt: " + totalCount;
 
-  // Notenschlüssel (Punkterange) berechnen
+  // Notenschlüssel (Punkterange) berechnen – Logik wie im Notenrechner
   const rangeCells = {
     1: document.querySelector(".range-1"),
     2: document.querySelector(".range-2"),
@@ -121,40 +183,38 @@ function calculateGrades() {
     6: document.querySelector(".range-6")
   };
 
-  let noteBoundaries;
-  if (schema === "ihk") {
-    noteBoundaries = [
-      { note: 1, min: 0.92 },
-      { note: 2, min: 0.81 },
-      { note: 3, min: 0.67 },
-      { note: 4, min: 0.50 },
-      { note: 5, min: 0.30 },
-      { note: 6, min: 0.00 }
-    ];
-  } else {
-    noteBoundaries = [
-      { note: 1, min: 0.86 },
-      { note: 2, min: 0.71 },
-      { note: 3, min: 0.56 },
-      { note: 4, min: 0.41 },
-      { note: 5, min: 0.20 },
-      { note: 6, min: 0.00 }
-    ];
-  }
+  let currentThresholds = (schema === "ihk") ? ihkThresholds : apThresholds;
 
   if (!isNaN(maxPoints) && maxPoints > 0) {
-    noteBoundaries.forEach((boundary, idx) => {
-      const note   = boundary.note;
-      const pctText = (boundary.min * 100).toFixed(2) + "%";
-      const lowerPoints = roundUpToNearestHalf(maxPoints * boundary.min).toFixed(1);
-      let upperPoints;
-      if (idx === 0) {
-        upperPoints = roundDownToNearestHalf(maxPoints).toFixed(1);
+    const ranges = computeHalfStepRanges(maxPoints, currentThresholds);
+
+    // Noten 1–5: "ab xx,xx% (von x,x bis y,y Punkte)"
+    for (let grade = 1; grade <= 5; grade++) {
+      const pctText = (currentThresholds[grade] * 100).toFixed(2).replace('.', ',') + "%";
+      const r = ranges[grade];
+
+      if (r) {
+        const lowerStr = r.min.toFixed(1).replace('.', ',');
+        const upperStr = r.max.toFixed(1).replace('.', ',');
+        rangeCells[grade].textContent =
+          "ab " + pctText + " (von " + lowerStr + " bis " + upperStr + " Punkte)";
       } else {
-        upperPoints = roundDownToNearestHalf(maxPoints * noteBoundaries[idx - 1].min - 0.1).toFixed(1);
+        rangeCells[grade].textContent =
+          "ab " + pctText + " (—)";
       }
-      rangeCells[note].textContent = "ab " + pctText + " (" + lowerPoints + " bis " + upperPoints + " Punkte)";
-    });
+    }
+
+    // Note 6: unter Schwelle der Note 5, "von 0,0 bis x,x Punkte"
+    const r6 = ranges[6];
+    if (r6) {
+      const lower6 = r6.min.toFixed(1).replace('.', ','); // i.d.R. 0,0
+      const upper6 = r6.max.toFixed(1).replace('.', ',');
+      const underPct = (currentThresholds[5] * 100).toFixed(2).replace('.', ',') + "%";
+      rangeCells[6].textContent =
+        "unter " + underPct + " (von " + lower6 + " bis " + upper6 + " Punkte)";
+    } else {
+      rangeCells[6].textContent = "";
+    }
   } else {
     for (let i = 1; i <= 6; i++) {
       rangeCells[i].textContent = "";
